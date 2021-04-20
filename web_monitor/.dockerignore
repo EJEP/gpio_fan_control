@@ -1,0 +1,6 @@
+__pycache__/
+instance/
+py_get_iplayer/__pycache__/
+.env
+Dockerfile
+docker-compose.yml

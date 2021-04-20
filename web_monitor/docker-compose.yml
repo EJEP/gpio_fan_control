@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  web:
+    image: "web_monitor"
+    ports:
+      - "30000:8000"
+    restart: unless-stopped
+    volumes:
+      - $HOST_DB_LOCATION:/fan_monitor/fan_control_testing.db:ro
+    environment:
+      - SECRET_KEY=$SECRET_KEY
+      - DB_LOCATION=/fan_monitor/fan_control_testing.db
+

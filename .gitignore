@@ -1,0 +1,4 @@
+.env
+__pycache__/
+/fan_controller/config.py
+/fan_controller_raspbian/config.py

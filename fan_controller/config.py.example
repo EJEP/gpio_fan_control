@@ -1,0 +1,5 @@
+from pyGPIO import port
+
+fan_control_pin = port.GPIO27 # Set to whichever pin is used for PWM
+database_file = '/path/to/the/database'
+cpu_temp_file = '/path/to/cpu/temp/file'
