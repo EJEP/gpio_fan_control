@@ -19,8 +19,6 @@ cd pyGPIO
 sudo python setup.py install
 ```
 
-## Software
-
 `fan_curve_control.py` controls the fan speed, and requires a config file setting:
 
 + Which pin to use for the PWM signal
