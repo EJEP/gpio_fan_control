@@ -1,8 +1,10 @@
 import datetime
-from pyGPIO import gpio, port
 import time
-from w1thermsensor import W1ThermSensor, W1ThermSensorError
+from collections import deque
+from statistics import mean
 import sqlite3
+from pyGPIO import gpio, port
+from w1thermsensor import W1ThermSensor, W1ThermSensorError
 import software_pwm
 import config
 
@@ -12,8 +14,22 @@ class fan_control():
     def __init__(self, pwm_pin):
         self.pwm_pin = pwm_pin
         self.current_duty_cycle = 100
-        self.cpu_temp = None
-        self.ds_temp = None
+        self.prev_temps = {
+            'cpu_1_min': deque(maxlen=6),
+            'cpu_5_min': deque(maxlen=30),
+            'cpu_10_min': deque(maxlen=60),
+            'ds_1_min': deque(maxlen=6),
+            'ds_5_min': deque(maxlen=30),
+            'ds_10_min': deque(maxlen=60),
+        }
+        self.moving_avg_temp = {
+            'cpu_1_min': None,
+            'ds_1_min': None,
+            'cpu_5_min': None,
+            'ds_5_min': None,
+            'cpu_10_min': None,
+            'ds_10_min': None,
+        }
 
     def get_temps(self):
         """Get temp from cpu. Logic with DS18B20 to follow"""
@@ -21,11 +37,16 @@ class fan_control():
         with open(config.cpu_temp_file) as temp_file:
             cpu_temp = int(temp_file.read()) / 1000
 
-        self.cpu_temp = cpu_temp
+        self.prev_temps['cpu_1_min'].append(cpu_temp)
+        self.prev_temps['cpu_5_min'].append(cpu_temp)
+        self.prev_temps['cpu_10_min'].append(cpu_temp)
 
         sensor = W1ThermSensor()
         try:
-            self.ds_temp = sensor.get_temperature()
+            ds_temp = sensor.get_temperature()
+            self.prev_temps['ds_1_min'].append(ds_temp)
+            self.prev_temps['ds_5_min'].append(ds_temp)
+            self.prev_temps['ds_10_min'].append(ds_temp)
         except W1ThermSensorError:
             # Really want to log what happened somewhere...
             pass
@@ -35,28 +56,48 @@ class fan_control():
         curs = conn.cursor()
 
         time_now = datetime.datetime.today()
-        curs.execute('INSERT INTO temp_and_speed values(?, ?, ?, ?, ?)',
-                     (time_now, self.cpu_temp, self.ds_temp,
-                      100-self.current_duty_cycle, 100-duty_cycle_to_set))
+        curs.execute('INSERT INTO temp_and_speed values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                     (time_now,
+                      self.prev_temps['cpu_1_min'][-1],
+                      self.prev_temps['ds_1_min'][-1],
+                      100-self.current_duty_cycle,
+                      100-duty_cycle_to_set,
+                      self.prev_temps['cpu_1_min'],
+                      self.prev_temps['cpu_5_min'],
+                      self.prev_temps['cpu_10_min'],
+                      self.prev_temps['ds_1_min'],
+                      self.prev_temps['ds_5_min'],
+                      self.prev_temps['ds_10_min']
+                      )
+                     )
 
         conn.commit()
         conn.close()
 
     def calc_duty_cycle(self):
-        """Calculcate duty cycle as percentage of full speed. Remember that the
-        duty cycle is inverted for the fan, so return 100 - calculated
-        cycle."""
+        """Calculate duty cycle as percentage of full speed. Remember that
+        the duty cycle is inverted for the fan, so return 100 - calculated
+        cycle.
+        """
 
         levels = [20, 50, 100]
         threshold = 10
 
-        if self.cpu_temp < 60 - threshold and self.ds_temp < 40 - threshold:
+        for key, temps in self.prev_temps:
+            self.moving_avg_temp[key] = \
+                mean(temps)
+
+        if (self.moving_avg_temp['cpu_t_1_min'] < 60 - threshold
+            and self.moving_avg_temp['ds_t_1_min'] < 40 - threshold):
             duty_cycle = levels[0]
-        elif self.cpu_temp > 60 or self.ds_temp > 40:
+        elif (self.moving_avg_temp['cpu_t_1_min'] > 60
+              or self.moving_avg_temp['ds_t_1_min'] > 40):
             duty_cycle = levels[1]
-        elif self.cpu_temp < 80 - threshold and self.ds_temp < 60 - threshold:
+        elif (self.moving_avg_temp['cpu_t_1_min'] < 80 - threshold
+              and self.moving_avg_temp['ds_t_1_min'] < 60 - threshold):
             duty_cycle = levels[1]
-        elif self.cpu_temp > 80 or self.ds_temp > 60:
+        elif (self.moving_avg_temp['cpu_t_1_min'] > 80
+              or self.moving_avg_temp['ds_t_1_min']) > 60:
             duty_cycle = levels[2]
 
         duty_cycle_to_set = 100 - duty_cycle
