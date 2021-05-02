@@ -56,16 +56,17 @@ class fan_control():
         curs = conn.cursor()
 
         time_now = datetime.datetime.today()
+
         curs.execute('INSERT INTO temp_and_speed values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                      (time_now,
                       self.prev_temps['cpu_1_min'][-1],
                       self.prev_temps['ds_1_min'][-1],
-                      self.prev_temps['cpu_1_min'],
-                      self.prev_temps['cpu_5_min'],
-                      self.prev_temps['cpu_10_min'],
-                      self.prev_temps['ds_1_min'],
-                      self.prev_temps['ds_5_min'],
-                      self.prev_temps['ds_10_min'],
+                      self.moving_avg_temp['cpu_1_min'],
+                      self.moving_avg_temp['cpu_5_min'],
+                      self.moving_avg_temp['cpu_10_min'],
+                      self.moving_avg_temp['ds_1_min'],
+                      self.moving_avg_temp['ds_5_min'],
+                      self.moving_avg_temp['ds_10_min'],
                       100-self.current_duty_cycle,
                       100-duty_cycle_to_set
                       )
