@@ -3,7 +3,7 @@ import time
 from collections import deque
 from statistics import mean
 import sqlite3
-from pyGPIO import gpio, port
+from pyGPIO.gpio import gpio, port
 from w1thermsensor import W1ThermSensor, W1ThermSensorError
 import software_pwm
 import config
