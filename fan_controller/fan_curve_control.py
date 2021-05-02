@@ -83,7 +83,7 @@ class fan_control():
         levels = [20, 50, 100]
         threshold = 10
 
-        for key, temps in self.prev_temps:
+        for key, temps in self.prev_temps.items():
             self.moving_avg_temp[key] = \
                 mean(temps)
 
