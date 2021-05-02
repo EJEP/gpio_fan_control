@@ -3,11 +3,10 @@ forecasts on a web page"""
 
 import datetime
 from bokeh.plotting import figure
-from bokeh.embed import json_item, components
+from bokeh.embed import components
 from bokeh.resources import CDN
 from bokeh.models import HoverTool, Legend, ColumnDataSource, Range1d, LinearAxis
-import json
-from flask import Flask, render_template, g, Blueprint, current_app, request
+from flask import render_template, Blueprint, current_app, request
 
 from web_monitor.db import get_db
 
