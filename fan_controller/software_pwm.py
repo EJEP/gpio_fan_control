@@ -1,6 +1,6 @@
 import time
 import threading
-from pyGPIO import gpio
+from pyGPIO.gpio import gpio
 
 
 class PWM():

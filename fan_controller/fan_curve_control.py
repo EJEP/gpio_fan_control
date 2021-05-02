@@ -1,5 +1,5 @@
 import datetime
-from pyGPIO import gpio, port
+from pyGPIO.gpio import gpio, port
 import time
 from w1thermsensor import W1ThermSensor, W1ThermSensorError
 import sqlite3
