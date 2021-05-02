@@ -68,81 +68,48 @@ def make_range_plot(dt1, dt2):
         },
     ))
 
-    cpu_temp_l = p.line(x='dates',
-                        y='cpu_temps',
-                        color='#006BA4',
-                        line_width=2,
-                        source=source)
+    y_data = [
+        'cpu_temps',
+        'cpu_temps_1_min',
+        'cpu_temps_5_min',
+        'cpu_temps_10_min',
+        'sensor_temps',
+        'sensor_temps_1_min',
+        'sensor_temps_5_min',
+        'sensor_temps_10_min',
+        'current_duty_cycle',
+        'next_duty_cycle',
+    ]
 
-    cpu_temp_1_min_l = p.line(x='dates',
-                              y='cpu_temps_1_min',
-                              color='#FF800E',
-                              line_width=2,
-                              source=source)
+    colours = ['006BA4', 'FF800E', 'ABABAB', '595959', '5F9ED1', 'C85200',
+               '898989', 'A2C8EC', 'FFBC79', 'CFCFCF']
 
-    cpu_temp_5_min_l = p.line(x='dates',
-                              y='cpu_temps_5_min',
-                              color='#ABABAB',
-                              line_width=2,
-                              source=source)
+    y_range_names = [None, None, None, None, None, None, None, None,
+                     'duty_cycles', 'duty_cycles']
 
-    cpu_temp_10_min_l = p.line(x='dates',
-                               y='cpu_temps_10_min',
-                               color='#595959',
-                               line_width=2,
-                               source=source)
-
-    sensor_temp_l = p.line(x='dates',
-                           y='sensor_temps',
-                           color='#5F9ED1',
-                           line_width=2,
-                           source=source)
-
-    sensor_temp_1_min_l = p.line(x='dates',
-                                 y='sensor_temps_1_min',
-                                 color='#C85200',
-                                 line_width=2,
-                                 source=source)
-
-    sensor_temp_5_min_l = p.line(x='dates',
-                                 y='sensor_temps_5_min',
-                                 color='#898989',
-                                 line_width=2,
-                                 source=source)
-
-    sensor_temp_10_min_l = p.line(x='dates',
-                                  y='sensor_temps_10_min',
-                                  color='#A2C8EC',
-                                  line_width=2,
-                                  source=source)
-
-    curr_dc_l = p.line(x='dates',
-                       y='current_duty_cycle',
-                       color='#FFBC79',
-                       line_width=2,
-                       source=source,
-                       y_range_name='duty_cycles')
-
-    next_dc_l = p.line(x='dates',
-                       y='next_duty_cycle',
-                       color='#CFCFCF',
-                       line_width=2,
-                       source=source,
-                       y_range_name='duty_cycles')
+    lines = []
+    for y_data, colour, y_range_name in zip(y_data, colours, y_range_name):
+        lines.append(p.line(x='dates',
+                            y=y_data,
+                            color=colour,
+                            line_width=2,
+                            source=source,
+                            y_range_name=y_range_name)
+                     )
 
     # The legend will be outside the plot, and so must be defined directly
     leg = Legend(
         items=[
-            ("CPU Temperature", [cpu_temp_l]),
-            ("CPU Temperature (1 min avg)", [cpu_temp_1_min_l]),
-            ("CPU Temperature (5 min avg)", [cpu_temp_5_min_l]),
-            ("CPU Temperature (10 min avg)", [cpu_temp_10_min_l]),
-            ("Sensor Temperature", [sensor_temp_l]),
-            ("Sensor Temperature (1 min avg)", [sensor_temp_1_min_l]),
-            ("Sensor Temperature (5 min avg)", [sensor_temp_5_min_l]),
-            ("Sensor Temperature (10 min avg)", [sensor_temp_10_min_l]),
-            ("Current Duty Cycle", [curr_dc_l]),
-            ("Next Duty Cycle", [next_dc_l]),
+            ("CPU Temperature", [lines[0]]),
+            ("CPU Temperature (1 min avg)", [lines[1]]),
+            ("CPU Temperature (5 min avg)", [lines[2]]),
+            ("CPU Temperature (10 min avg)", [lines[3]]),
+            ("Sensor Temperature", [lines[4]]),
+            ("Sensor Temperature (1 min avg)", [lines[5]]),
+            ("Sensor Temperature (5 min avg)", [lines[6]]),
+            ("Sensor Temperature (10 min avg)", [lines[7]]),
+            ("Current Duty Cycle", [lines[8]]),
+            ("Next Duty Cycle", [lines[9]]),
         ],
         location=(5, 360),
         click_policy='hide')
