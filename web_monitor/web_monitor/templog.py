@@ -84,18 +84,23 @@ def make_range_plot(dt1, dt2):
     colours = ['#006BA4', '#FF800E', '#ABABAB', '#595959', '#5F9ED1', '#C85200',
                '#898989', '#A2C8EC', '#FFBC79', '#CFCFCF']
 
-    y_range_names = [None, None, None, None, None, None, None, None,
-                     'duty_cycles', 'duty_cycles']
-
     lines = []
-    for y_data, colour, y_range_name in zip(y_data, colours, y_range_names):
-        lines.append(p.line(x='dates',
-                            y=y_data,
-                            color=colour,
-                            line_width=2,
-                            source=source,
-                            y_range_name=y_range_name)
-                     )
+    for y_data, colour in zip(y_data, colours):
+        if 'duty_cycle' in y_data:
+            lines.append(p.line(x='dates',
+                                y=y_data,
+                                color=colour,
+                                line_width=2,
+                                source=source,
+                                y_range_name='duty_cycles')
+                         )
+        else:
+            lines.append(p.line(x='dates',
+                                y=y_data,
+                                color=colour,
+                                line_width=2,
+                                source=source)
+                         )
 
     # The legend will be outside the plot, and so must be defined directly
     leg = Legend(
@@ -111,7 +116,7 @@ def make_range_plot(dt1, dt2):
             ("Current Duty Cycle", [lines[8]]),
             ("Next Duty Cycle", [lines[9]]),
         ],
-        location=(5, 360),
+        location=(5, 200),
         click_policy='hide')
 
     p.add_layout(LinearAxis(y_range_name='duty_cycles',
