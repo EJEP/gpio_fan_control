@@ -81,14 +81,14 @@ def make_range_plot(dt1, dt2):
         'next_duty_cycle',
     ]
 
-    colours = ['006BA4', 'FF800E', 'ABABAB', '595959', '5F9ED1', 'C85200',
-               '898989', 'A2C8EC', 'FFBC79', 'CFCFCF']
+    colours = ['#006BA4', '#FF800E', '#ABABAB', '#595959', '#5F9ED1', '#C85200',
+               '#898989', '#A2C8EC', '#FFBC79', '#CFCFCF']
 
     y_range_names = [None, None, None, None, None, None, None, None,
                      'duty_cycles', 'duty_cycles']
 
     lines = []
-    for y_data, colour, y_range_name in zip(y_data, colours, y_range_name):
+    for y_data, colour, y_range_name in zip(y_data, colours, y_range_names):
         lines.append(p.line(x='dates',
                             y=y_data,
                             color=colour,
