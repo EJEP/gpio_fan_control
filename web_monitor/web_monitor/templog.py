@@ -81,16 +81,22 @@ def make_range_plot(dt1, dt2):
         'next_duty_cycle',
     ]
 
-    colours = ['#006BA4', '#FF800E', '#ABABAB', '#595959', '#5F9ED1', '#C85200',
-               '#898989', '#A2C8EC', '#FFBC79', '#CFCFCF']
+    colours = ['#006BA4', '#FF800E', '#ABABAB', '#595959', '#5F9ED1',
+               '#C85200', '#898989', '#A2C8EC', '#FFBC79', '#CFCFCF']
+
+    line_dashes = ['solid', 'solid', 'solid', 'solid',
+                   'solid', 'solid', 'solid', 'solid',
+                   'solid', 'dashed'
+                   ]
 
     lines = []
-    for y_data, colour in zip(y_data, colours):
+    for y_data, colour, line_dash in zip(y_data, colours, line_dashes):
         if 'duty_cycle' in y_data:
             lines.append(p.line(x='dates',
                                 y=y_data,
                                 color=colour,
                                 line_width=2,
+                                line_dash=line_dash,
                                 source=source,
                                 y_range_name='duty_cycles')
                          )
@@ -99,6 +105,7 @@ def make_range_plot(dt1, dt2):
                                 y=y_data,
                                 color=colour,
                                 line_width=2,
+                                line_dash=line_dash,
                                 source=source)
                          )
 
