@@ -83,22 +83,24 @@ class fan_control():
 
         levels = [20, 50, 100]
         threshold = 10
+        cpu_temp = self.moving_avg_temp['cpu_5_min']
+        ds_temp = self.moving_avg_temp['ds_5_min']
 
         for key, temps in self.prev_temps.items():
             self.moving_avg_temp[key] = \
                 mean(temps)
 
-        if (self.moving_avg_temp['cpu_1_min'] < 60 - threshold
-            and self.moving_avg_temp['ds_1_min'] < 40 - threshold):
+        if (cpu_temp < 60 - threshold
+            and ds_temp < 40 - threshold):
             duty_cycle = levels[0]
-        elif (self.moving_avg_temp['cpu_1_min'] > 60
-              or self.moving_avg_temp['ds_1_min'] > 40):
+        elif (cpu_temp > 60
+              or ds_temp > 40):
             duty_cycle = levels[1]
-        elif (self.moving_avg_temp['cpu_1_min'] < 80 - threshold
-              and self.moving_avg_temp['ds_1_min'] < 60 - threshold):
+        elif (cpu_temp < 80 - threshold
+              and ds_temp < 60 - threshold):
             duty_cycle = levels[1]
-        elif (self.moving_avg_temp['cpu_1_min'] > 80
-              or self.moving_avg_temp['ds_1_min']) > 60:
+        elif (cpu_temp > 80
+              or ds_temp) > 60:
             duty_cycle = levels[2]
 
         duty_cycle_to_set = 100 - duty_cycle
