@@ -74,7 +74,6 @@ class fan_control():
 
         conn.commit()
         conn.close()
-        print(f'tried to log to {config.database_file}')
 
     def calc_duty_cycle(self):
         """Calculate duty cycle as percentage of full speed. Remember that
