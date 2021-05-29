@@ -81,7 +81,7 @@ class fan_control():
         cycle.
         """
 
-        levels = [20, 50, 70, 100]
+        levels = [20, 50, 70, 90, 100]
 
         for key, temps in self.prev_temps.items():
             self.moving_avg_temp[key] = \
