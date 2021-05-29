@@ -84,12 +84,13 @@ class fan_control():
 
         levels = [20, 50, 100]
         threshold = 10
-        cpu_temp = self.moving_avg_temp['cpu_5_min']
-        ds_temp = self.moving_avg_temp['ds_5_min']
 
         for key, temps in self.prev_temps.items():
             self.moving_avg_temp[key] = \
                 mean(temps)
+
+        cpu_temp = self.moving_avg_temp['cpu_5_min']
+        ds_temp = self.moving_avg_temp['ds_5_min']
 
         if (cpu_temp < 60 - threshold
             and ds_temp < 40 - threshold):
