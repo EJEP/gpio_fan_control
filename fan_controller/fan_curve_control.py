@@ -81,8 +81,8 @@ class fan_control():
         cycle.
         """
 
-        levels = [20, 50, 100]
-        threshold = 10
+        levels = [20, 50, 70, 100]
+        threshold = 5
 
         for key, temps in self.prev_temps.items():
             self.moving_avg_temp[key] = \
@@ -97,12 +97,18 @@ class fan_control():
         elif (cpu_temp > 60
               or ds_temp > 40):
             duty_cycle = levels[1]
+        elif (cpu_temp < 70 - threshold
+              or ds_temp < 50 - threshold):
+            duty_cycle = levels[1]
+        elif (cpu_temp > 70
+              or ds_temp > 50):
+            duty_cycle = levels[2]
         elif (cpu_temp < 80 - threshold
               and ds_temp < 60 - threshold):
-            duty_cycle = levels[1]
+            duty_cycle = levels[2]
         elif (cpu_temp > 80
               or ds_temp) > 60:
-            duty_cycle = levels[2]
+            duty_cycle = levels[3]
 
         duty_cycle_to_set = 100 - duty_cycle
 
