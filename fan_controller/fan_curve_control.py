@@ -91,24 +91,24 @@ class fan_control():
         cpu_temp = self.moving_avg_temp['cpu_5_min']
         ds_temp = self.moving_avg_temp['ds_5_min']
 
-        if (cpu_temp < 60 - threshold
-            and ds_temp < 40 - threshold):
-            duty_cycle = levels[0]
-        elif (cpu_temp > 60
-              or ds_temp > 40):
-            duty_cycle = levels[1]
-        elif (cpu_temp < 70 - threshold
-              or ds_temp < 50 - threshold):
-            duty_cycle = levels[1]
-        elif (cpu_temp > 70
-              or ds_temp > 50):
-            duty_cycle = levels[2]
+        if (cpu_temp > 80
+            or ds_temp) > 60:
+            duty_cycle = levels[3]
         elif (cpu_temp < 80 - threshold
               and ds_temp < 60 - threshold):
             duty_cycle = levels[2]
-        elif (cpu_temp > 80
-              or ds_temp) > 60:
-            duty_cycle = levels[3]
+        elif (cpu_temp > 70
+              or ds_temp > 50):
+            duty_cycle = levels[2]
+        elif (cpu_temp < 70 - threshold
+              or ds_temp < 50 - threshold):
+            duty_cycle = levels[1]
+        elif (cpu_temp > 60
+              or ds_temp > 40):
+            duty_cycle = levels[1]
+        elif (cpu_temp < 60 - threshold
+              and ds_temp < 40 - threshold):
+            duty_cycle = levels[0]
 
         duty_cycle_to_set = 100 - duty_cycle
 
